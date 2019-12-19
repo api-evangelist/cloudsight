@@ -1,0 +1,45 @@
+{
+    "name": "Cloudsight",
+    "description": "<p>CloudSight's mission is to become the global leader in image captioning and understanding. Our aim is to deliver the most superior and state-of-the-art solution to people and companies around the world. CloudSight. has two breakthrough consumer apps - CamFind, the world's first successful mobile visual search engine, which allows you to \"Search the Physical World\"\u200b and find information about anything just by taking a picture from your mobile device; and TapTapSee, an app for the blind and visually impaired that utilizes the mobile device's camera and VoiceOver to photograph objects and identify them out loud for the user.<\/p>",
+    "image": "http:\/\/kinlane-productions.s3.amazonaws.com\/api-evangelist-site\/company\/logos\/cloudsight-logo.png",
+    "tags": [
+        "api provider",
+        "have api",
+        "images"
+    ],
+    "created": "2019-12-19",
+    "modified": "2019-12-19",
+    "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/cloudsight\/master\/apis.json",
+    "specificationVersion": "0.14",
+    "apis": [
+        {
+            "name": "Cloudsight",
+            "description": null,
+            "image": "http:\/\/kinlane-productions.s3.amazonaws.com\/api-evangelist-site\/company\/logos\/cloudsight-logo.png",
+            "humanURL": "https:\/\/cloudsight.ai\/",
+            "baseURL": "",
+            "tags": [],
+            "properties": [
+                {
+                    "type": "x-postman-collecction",
+                    "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/1forge\/master\/cloudsight-postman-collection.json"
+                }
+            ]
+        }
+    ],
+    "include": [],
+    "x-common": [
+        {
+            "type": "Developers",
+            "url": "https:\/\/cloudsight.docs.apiary.io"
+        },
+        {
+            "type": "Pricing",
+            "url": "https:\/\/cloudsight.ai\/pricing"
+        },
+        {
+            "type": "Website",
+            "url": "https:\/\/cloudsight.ai\/"
+        }
+    ]
+}
