@@ -1,0 +1,119 @@
+generated: '2026-08-09'
+method: searched
+source: >-
+  https://cloudsight.docs.apiary.io/api-description-document — the cross-cutting
+  request/response behaviour that applies to every CloudSight operation, read
+  from the published API Blueprint and cross-checked against
+  openapi/cloudsight-images-openapi.yml.
+description: >-
+  How the CloudSight API behaves across its three operations: authentication
+  style, the asynchronous submit-then-poll job model, credit signalling, error
+  envelope, versioning, and the conventions it does NOT implement.
+base_url: https://api.cloudsight.ai/v1
+api_style: >-
+  REST over HTTPS. Requests are JSON or multipart/form-data; responses are
+  JSON. Asynchronous by design — every recognition is a job addressed by an
+  opaque token.
+
+authentication:
+  scheme: >-
+    Custom `Authorization: CloudSight [key]` header, or OAuth 1.0a (RFC 5849)
+    with the `image` parameter excluded from the signature.
+  detail: authentication/cloudsight-authentication.yml
+
+asynchronous_jobs:
+  supported: true
+  model: submit-then-poll
+  submit: POST /images returns 201 with a `token` and a stored-image `url`.
+  poll: GET /images/{token}
+  terminal_statuses: [completed, skipped, timeout]
+  non_terminal_status: not completed
+  documented_poll_strategy: >-
+    Sleep 5 seconds after submitting, then poll every 1 second while the
+    response carries "status": "not completed".
+  retry: >-
+    POST /images/{token}/repost re-queues a request that returned
+    "status": "timeout", and is the documented best practice when a response
+    is `skipped` with reason `unsure` or `close`.
+  ttl: >-
+    A `ttl` request parameter sets the deadline in seconds before expiration;
+    the poll response echoes the remaining `ttl`.
+
+idempotency:
+  supported: false
+  mechanism: null
+  note: >-
+    CloudSight documents no idempotency key, no request de-duplication header,
+    and no replay semantics for POST /images. The `repost` operation is
+    explicitly a RE-submission (it re-queues work against the same token), not
+    an idempotent replay. No `Idempotency` pointer is wired into apis.yml,
+    because none is earned.
+
+pagination:
+  supported: false
+  note: No list/collection endpoint exists — every read is a single job by token.
+
+filtering_and_expansion:
+  supported: false
+
+metadata:
+  supported: partial
+  fields:
+  - device_id — a caller-generated unique device identifier (UUID recommended)
+  - latitude / longitude / altitude — geolocation context carried with the request
+  - locale / language — request locale and the language the caption is returned in
+  note: >-
+    These are recognition CONTEXT parameters, not free-form key/value metadata;
+    CloudSight does not echo arbitrary caller metadata back on the response.
+
+request_tracing:
+  request_id_header: null
+  correlation: >-
+    The `token` returned by POST /images is the only correlation handle across
+    the submit and poll calls. No request-id or trace header is documented.
+
+rate_limit_signaling:
+  headers:
+  - name: X-CloudSight-CreditBalance
+    meaning: Remaining credit balance on the account after the request.
+  - name: X-CloudSight-Overage
+    meaning: Credits consumed beyond the plan allowance.
+  note: >-
+    These are CREDIT/quota counters, not RFC-style rate-limit headers. No
+    numeric request-per-window limit, no Retry-After, and no 429 response are
+    documented anywhere in the public contract, so no rate-limits/ artifact is
+    emitted.
+
+error_envelope:
+  shape: '{"error": {"<field>": ["<message>", ...]}}'
+  media_type: application/json
+  rfc9457: false
+  status_codes_documented: [201, 200, 422]
+  detail: errors/cloudsight-problem-types.yml
+  note: >-
+    Beyond the documented 422, the API also expresses failure INSIDE a 200
+    response body via `status: skipped` + `reason`, and `status: timeout`. A
+    client that only branches on HTTP status will miss most failure modes.
+
+versioning:
+  scheme: uri-path
+  current: v1
+  base: https://api.cloudsight.ai/v1
+  header: null
+  detail: lifecycle/cloudsight-lifecycle.yml
+
+media_and_limits:
+  upload_methods:
+  - multipart/form-data file upload (`image`)
+  - base64 data URI in JSON (`image`) — "not recommended for anything other than very small images"
+  - remote URL fetch in JSON (`remote_image_url`) — the URL must return 200; any 3xx redirect is an error
+  mutually_exclusive: true
+  recommended_resolution: no higher than 1024px
+  recommended_jpeg_quality: compression level 5-8
+  note: Larger images are resized server-side, which slows the request.
+
+webhooks:
+  supported: false
+  note: >-
+    No callback/webhook delivery is documented; completion is discovered only
+    by polling. This is why no asyncapi/ artifact is emitted.

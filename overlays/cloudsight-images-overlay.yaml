@@ -1,0 +1,51 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the CloudSight API
+  version: 1.0.0
+extends: openapi/cloudsight-images-openapi.yml
+x-generated: '2026-08-09'
+x-method: generated
+x-source: >-
+  API Evangelist enrichment pipeline. Records the annotations added on top of
+  the conversion of CloudSight's published API Blueprint; the converted spec
+  itself is not mutated.
+actions:
+- target: $.info
+  update:
+    x-apievangelist-profile: https://apis.io/providers/cloudsight/
+    x-source-format: API Blueprint 1A
+    x-source-document: https://cloudsight.docs.apiary.io/api-description-document
+    x-source-last-updated: '2018-10-30'
+    x-provider-publishes-openapi: false
+- target: $.info
+  update:
+    x-async-model: >-
+      Submit-then-poll. POST /images returns a token; GET /images/{token} is
+      polled until status is completed, skipped or timeout. No webhooks.
+    x-idempotency: none
+    x-error-envelope: '{"error": {"<field>": ["<message>"]}}'
+- target: $.paths['/images'].post
+  update:
+    x-agentic-access:
+      action-class: acting
+      consequence: write
+      audit: required
+    x-credit-consuming: true
+    x-signal-headers: [X-CloudSight-CreditBalance, X-CloudSight-Overage]
+- target: $.paths['/images/{token}'].get
+  update:
+    x-agentic-access:
+      action-class: connected
+      consequence: read
+    x-poll-strategy: sleep 5s, then poll every 1s while status is "not completed"
+    x-in-band-failure: >-
+      HTTP 200 with status skipped/timeout is a failure. Branch on the status
+      field, not the HTTP code.
+- target: $.paths['/images/{token}/repost'].post
+  update:
+    x-agentic-access:
+      action-class: acting
+      consequence: write
+    x-retry-guidance: >-
+      Repost once, and only for status timeout or skip reason unsure/close.
+      Never repost blurry, dark, bright or offensive.

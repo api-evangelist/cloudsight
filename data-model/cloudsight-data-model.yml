@@ -1,0 +1,75 @@
+generated: '2026-08-09'
+method: derived
+source: >-
+  openapi/cloudsight-images-openapi.yml — schema $ref links and the token
+  reference that binds the submit and poll operations.
+docs: https://cloudsight.docs.apiary.io
+description: >-
+  The CloudSight data model is deliberately tiny: one resource, addressed by an
+  opaque token, that transitions through a status machine. There are no
+  accounts, projects, or collections in the public contract.
+notation: >-
+  relationships use has_one / has_many / belongs_to with the reference field
+  name; direction is from the entity that owns the reference.
+entities:
+- name: ImageRequest
+  domain: recognition
+  description: >-
+    A submitted image plus its recognition context (locale, language,
+    device_id, geolocation, ttl, focal point). Created by POST /images.
+  schema: ImageRequest
+  identifier: null
+- name: ImageAccepted
+  domain: recognition
+  description: >-
+    The acknowledgement returned by POST /images — the stored image `url` and
+    the `token` that addresses the job.
+  schema: ImageAccepted
+  identifier: token
+- name: ImageResponse
+  domain: recognition
+  description: >-
+    The state of a recognition job, and its result when complete: `status`,
+    `name` (the caption), `reason` (when skipped), `flags`, and the remaining
+    `ttl`.
+  schema: ImageResponse
+  identifier: token
+relationships:
+- from: ImageAccepted
+  to: ImageResponse
+  type: has_one
+  via: token
+  note: >-
+    The token returned by POST /images is the path parameter of
+    GET /images/{token} and POST /images/{token}/repost.
+- from: ImageResponse
+  to: ImageRequest
+  type: belongs_to
+  via: token
+  note: The job state resolves back to the image that was submitted.
+value_objects:
+- name: status
+  values: [not completed, completed, skipped, timeout]
+  on: ImageResponse
+- name: reason
+  values: [offensive, blurry, dark, bright, unsure, close]
+  on: ImageResponse
+  applies_when: status == skipped
+- name: flags
+  values: [adult]
+  on: ImageResponse
+  cardinality: array
+identifiers:
+  token:
+    format: opaque URL-safe string
+    observed_examples: [AJKAWHKGLjqMd9KDNIXQfg, WySLTJWESPTtt6v0oBmzKf, WWfqDSw6Ui1rtNDYlVvX2w]
+    length_observed: 22
+    prefix: none
+    note: >-
+      Tokens carry no type prefix and no documented lifetime beyond the request
+      `ttl`; CloudSight does not document how long a completed result stays
+      retrievable.
+gaps:
+- No account, project, key or usage entity is exposed in the public API.
+- No listing or search across previously submitted images.
+- No documented retention or deletion semantics for stored images.

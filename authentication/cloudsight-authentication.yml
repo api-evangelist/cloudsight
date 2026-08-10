@@ -1,0 +1,63 @@
+generated: '2026-08-09'
+method: searched
+source: https://cloudsight.docs.apiary.io/api-description-document
+docs: https://cloudsight.docs.apiary.io
+description: >-
+  CloudSight documents two alternative authentication methods for the same API,
+  captured from the "Authentication" section of the API Blueprint CloudSight
+  publishes on Apiary. There is no OAuth 2.0, no OpenID Connect, and no scope
+  surface — the key (or the OAuth 1.0a key/secret pair) is all-or-nothing
+  against the account.
+summary:
+  types:
+  - apiKey
+  - oauth1
+  api_key_in:
+  - header
+  oauth2: false
+  openid_connect: false
+  mutual_tls: false
+  scopes: none
+schemes:
+- name: CloudSightKey
+  type: apiKey
+  in: header
+  parameter: Authorization
+  format: 'Authorization: CloudSight [key]'
+  description: >-
+    Simple key-based authentication. On each request include the header
+    `Authorization: CloudSight [key]`, replacing `[key]` with the key provided
+    for the account.
+  sources:
+  - openapi/cloudsight-images-openapi.yml
+  - https://cloudsight.docs.apiary.io/api-description-document
+- name: OAuth1Simple
+  type: oauth1
+  spec: RFC 5849
+  in: header
+  parameter: Authorization
+  description: >-
+    "OAuth1-Simple" — the client calculates a signature from a key, secret,
+    nonce, URL and the request parameters and sends the result in the
+    `Authorization` header. CloudSight requires that the `image` parameter be
+    EXCLUDED from the signature calculation. OpenAPI 3 has no native OAuth 1.0a
+    security scheme, so this alternative is not expressible in
+    openapi/cloudsight-images-openapi.yml and is recorded here only.
+  sources:
+  - https://cloudsight.docs.apiary.io/api-description-document
+key_handling:
+  transport: >-
+    CloudSight recommends HTTPS; over plain HTTP the key is sent in clear text.
+    The documented base URL is https://api.cloudsight.ai/v1 (HTTPS, TLS 1.3
+    observed 2026-08-09).
+  secrecy: >-
+    "Your API key is very important and identifies any request as yours, so be
+    sure to keep it secret." — CloudSight API documentation.
+  rotation: not documented
+  key_issuance: >-
+    Keys are issued per account; the account surface is https://cloudsight.ai/login.
+    No self-service key documentation is published anonymously.
+gaps:
+- No OAuth 2.0 / OIDC surface, so no scoped or delegated access.
+- No documented key rotation or expiry policy.
+- No /.well-known/ discovery on any CloudSight host (see well-known/cloudsight-well-known.yml).

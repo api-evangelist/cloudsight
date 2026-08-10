@@ -1,0 +1,59 @@
+generated: '2026-08-09'
+method: derived
+status: candidate
+source: openapi/cloudsight-images-openapi.yml
+note: >-
+  CloudSight publishes NO hosted or remote MCP server. Searched cloudsight.ai,
+  the Apiary documentation project, the github.com/cloudsight organization, npm
+  and the public MCP registries — no result; /.well-known/oauth-protected-resource
+  and /.well-known/oauth-authorization-server both 404 on api.cloudsight.ai.
+  This is a CANDIDATE tool surface derived mechanically from the three
+  operationIds in the converted OpenAPI. No MCP endpoint is implied to exist,
+  and every source_operation was verified against the spec it names.
+server:
+  name: cloudsight
+  transport: http
+  url: null
+  auth: null
+tools:
+- name: describe_image
+  description: >-
+    Submit an image (multipart upload, base64 data URI, or remote URL) for
+    recognition and receive a token to poll.
+  source_operation: openapi/cloudsight-images-openapi.yml#postImages
+  annotations:
+    readOnly: false
+    idempotent: false
+- name: get_image_result
+  description: >-
+    Retrieve the recognition result for a token — the natural-language caption
+    when complete, or the skip reason / timeout status.
+  source_operation: openapi/cloudsight-images-openapi.yml#getImage
+  annotations:
+    readOnly: true
+    idempotent: true
+- name: repost_image
+  description: >-
+    Re-queue a recognition request whose token timed out, or that was skipped
+    with reason `unsure` or `close`.
+  source_operation: openapi/cloudsight-images-openapi.yml#repostImage
+  annotations:
+    readOnly: false
+    idempotent: false
+agent_notes:
+- >-
+  This API is asynchronous. An agent must poll get_image_result — sleep 5
+  seconds after describe_image, then poll every 1 second while status is
+  "not completed".
+- >-
+  Failure is usually in-band: an HTTP 200 with status `skipped` or `timeout` is
+  a failure, not a success. See errors/cloudsight-problem-types.yml.
+- >-
+  There is no idempotency key. Re-running describe_image on the same image
+  creates a new job and consumes another credit.
+x-evidence:
+  fetched: '2026-08-09'
+  probes:
+  - {url: 'https://api.cloudsight.ai/.well-known/oauth-protected-resource', status: 404}
+  - {url: 'https://api.cloudsight.ai/.well-known/oauth-authorization-server', status: 404}
+  - {url: 'https://api.cloudsight.ai/.well-known/ai-plugin.json', status: 404}

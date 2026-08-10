@@ -1,0 +1,75 @@
+generated: '2026-08-09'
+method: probed
+source: >-
+  https://cloudsight.docs.apiary.io/api-description-document,
+  https://cloudsight.docs.apiary.io/feed, and live probes of
+  http://status.cloudsight.ai and https://blog.cloudsight.ai (2026-08-09)
+description: >-
+  CloudSight publishes a URI-versioned v1 API and nothing else in the
+  operational-transparency layer. The status page linked from its own footer is
+  DEACTIVATED, the blog subdomain no longer resolves to a live host, and no
+  deprecation, sunset or SLA policy is published anywhere.
+versioning:
+  scheme: uri-path
+  current: v1
+  base: https://api.cloudsight.ai/v1
+  header: null
+  policy_url: null
+  note: >-
+    Only one version has ever been published. The API description document has
+    not been changed by CloudSight since 2018-10-30 (per the Apiary blueprint's
+    own lastUpdated timestamp).
+deprecation:
+  policy_url: null
+  sunset_header: unknown
+  deprecation_header: unknown
+  rfc8594: false
+  note: >-
+    No deprecation policy, no Sunset/Deprecation header support, and no
+    end-of-life commitment is published. No `Deprecation` pointer is wired.
+deprecated_operations: []
+sla:
+  url: null
+  uptime_target: null
+support:
+  contact: https://cloudsight.ai/contact
+  reasons_offered: [business, enterprise sales, education sales, general]
+status_page:
+  url: http://status.cloudsight.ai
+  provider: Atlassian Statuspage
+  state: inactive
+  observed_title: CloudSight API Status - Page Inactive
+  https: false
+  note: >-
+    CloudSight's own site footer links to this page with the label "All Systems
+    Operational", but the page is deactivated: the HTML title reads "Page
+    Inactive" and https://status.cloudsight.ai/api/v2/summary.json returns 401
+    "Your page is inactive. Please include an API key to access this resource."
+    HTTPS on the hostname fails entirely; only plain HTTP answers. Because the
+    page conveys no operational signal, NO `StatusPage` pointer is wired into
+    apis.yml — a 200 from a deactivated page is not evidence of a status
+    surface.
+blog:
+  url: https://blog.cloudsight.ai
+  state: unreachable
+  note: >-
+    Linked from the site's main navigation. DNS resolves to Medium's address
+    pool but neither http:// nor https:// completes a connection. No `Blog`
+    pointer is wired.
+docs_host:
+  url: https://cloudsight.docs.apiary.io
+  provider: Apiary (Oracle)
+  state: live
+  note: >-
+    CloudSight's entire developer documentation surface is a third-party Apiary
+    project. This is a concentration risk: the machine-readable contract, the
+    interactive console and the change feed all live on a hosted platform
+    CloudSight does not control, and cloudsight.ai/docs is only a redirect to it.
+x-evidence:
+  fetched: '2026-08-09'
+  probes:
+  - {url: 'http://status.cloudsight.ai/', status: 200, note: 'title: Page Inactive'}
+  - {url: 'https://status.cloudsight.ai/api/v2/summary.json', status: 401, note: page inactive}
+  - {url: 'https://blog.cloudsight.ai/', status: 0, note: connection failed}
+  - {url: 'https://cloudsight.docs.apiary.io/', status: 200}
+  - {url: 'https://api.cloudsight.ai/v1/images', status: 404, note: GET on a POST-only path; host live}

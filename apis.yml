@@ -1,23 +1,112 @@
 aid: cloudsight
 name: CloudSight
-description: 'CloudSight is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+x-enrichment:
+  date: '2026-08-09'
+  status: enriched
+  artifacts_added: 20
+  pass: local-v1
+description: >-
+  CloudSight Inc. is a computer-vision company that sells general-purpose image
+  understanding as a single, simple REST API. A client POSTs an image — as a
+  multipart upload, a base64 data URI, or a remote image URL — and receives a
+  token; polling that token returns a natural-language caption describing what
+  is in the picture, together with skip reasons (blurry, dark, bright,
+  offensive, unsure) and content flags (adult) when the image cannot be
+  described. The company grew out of the CamFind visual-search app, also ships
+  an on-device SDK, and lists a whole-scene recognition model on Google Cloud
+  Marketplace. The public API contract is published as an API Blueprint on
+  Apiary and is backed by first-party client libraries for Ruby, Python, Go,
+  Elixir and Objective-C.
 url: https://raw.githubusercontent.com/api-evangelist/cloudsight/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
+x-source-url: https://forgeglobal.com/cloudsight_stock/
+x-tier: profiled
+x-tier-reason: enrichment
 specificationVersion: '0.20'
 created: '2026-08-09'
 modified: '2026-08-09'
+image: https://cloudsight.ai/static/img/favicons/apple-touch-icon.png
 tags:
 - Company
-apis: []
+- Artificial Intelligence
+- Machine Learning
+- Computer Vision
+- Image Recognition
+- Image Captioning
+- Classification
+- Media
+apis:
+- name: CloudSight API
+  description: >-
+    A simple REST API for understanding images. Send an image and CloudSight
+    returns a natural-language description of its contents. Three operations —
+    submit an image, poll the resulting annotation by token, and repost a
+    request that timed out or was skipped as unsure/close.
+  humanURL: https://cloudsight.docs.apiary.io
+  baseURL: https://api.cloudsight.ai/v1
+  tags:
+  - Image Recognition
+  - Computer Vision
+  - Captioning
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudsight-images-openapi.yml
+  - type: APIBlueprint
+    url: openapi/cloudsight-api-blueprint-original.apib
+  - type: Overlay
+    url: overlays/cloudsight-images-overlay.yaml
+  - type: Documentation
+    url: https://cloudsight.docs.apiary.io
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/cloudsight-domain-security.yml
 - type: Website
-  url: https://forgeglobal.com/cloudsight_stock/
+  url: https://cloudsight.ai
+- type: Documentation
+  url: https://cloudsight.docs.apiary.io
+- type: Support
+  url: https://cloudsight.ai/contact
+- type: GitHubOrganization
+  url: https://github.com/cloudsight
+- type: Login
+  url: https://cloudsight.ai/login
+- type: TermsOfService
+  url: https://cloudsight.ai/terms
+- type: PrivacyPolicy
+  url: https://cloudsight.ai/privacy-policy
+- type: Authentication
+  url: authentication/cloudsight-authentication.yml
+- type: Conventions
+  url: conventions/cloudsight-conventions.yml
+- type: ErrorCatalog
+  url: errors/cloudsight-problem-types.yml
+- type: Examples
+  url: examples/cloudsight-images-examples.yml
+- type: DataModel
+  url: data-model/cloudsight-data-model.yml
+- type: Conformance
+  url: conformance/cloudsight-conformance.yml
+- type: Lifecycle
+  url: lifecycle/cloudsight-lifecycle.yml
+- type: ChangeLog
+  url: changelog/cloudsight-changelog.yml
+- type: Sandbox
+  url: sandbox/cloudsight-sandbox.yml
+- type: Packages
+  url: packages/cloudsight-packages.yml
+- type: SDKs
+  url: packages/cloudsight-packages.yml
+- type: MCPServer
+  url: mcp/cloudsight-mcp.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: AgenticAccess
+  url: agentic-access/cloudsight-agentic-access.yml
+- type: LLMsTxt
+  url: llms/cloudsight-llms.txt

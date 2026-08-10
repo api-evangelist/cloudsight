@@ -1,0 +1,55 @@
+generated: '2026-08-09'
+method: probed
+source: live probes of every CloudSight host, 2026-08-09
+description: >-
+  CloudSight publishes NO /.well-known/ discovery documents on any of its
+  hosts. This artifact records the probe rather than the absence of a probe.
+
+
+  IMPORTANT — SOFT-404 WARNING. https://cloudsight.ai is a Vue single-page
+  application whose server returns HTTP 200 with the same 2,577-byte HTML shell
+  for EVERY path, including every /.well-known/* path, /llms.txt, /robots.txt
+  and /openapi.json. Those 200s are NOT evidence of a document; each was
+  compared against a control path and returned byte-identical HTML. Only the
+  API host, https://api.cloudsight.ai, returns honest status codes (a 9-byte
+  JSON 404), and every discovery path there is a real 404.
+hosts:
+- host: https://api.cloudsight.ai
+  honest_status_codes: true
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+  - {path: /llms.txt, status: 404}
+  - {path: /openapi.json, status: 404}
+  - {path: /openapi.yaml, status: 404}
+  - {path: /swagger.json, status: 404}
+  - {path: /robots.txt, status: 200, content_type: text/plain, note: 'Disallow: / for all agents'}
+- host: https://cloudsight.ai
+  honest_status_codes: false
+  note: >-
+    SPA catch-all. Every path below returned 200 text/html, 2577 bytes — the
+    identical application shell served at /. None is a real document; none is
+    counted.
+  documents:
+  - {path: /.well-known/security.txt, status: 200, real: false, reason: spa-catch-all}
+  - {path: /.well-known/openid-configuration, status: 200, real: false, reason: spa-catch-all}
+  - {path: /.well-known/oauth-authorization-server, status: 200, real: false, reason: spa-catch-all}
+  - {path: /.well-known/api-catalog, status: 200, real: false, reason: spa-catch-all}
+  - {path: /.well-known/ai-plugin.json, status: 200, real: false, reason: spa-catch-all}
+  - {path: /.well-known/agent-card.json, status: 200, real: false, reason: spa-catch-all}
+  - {path: /.well-known/agent.json, status: 200, real: false, reason: spa-catch-all}
+  - {path: /llms.txt, status: 200, real: false, reason: spa-catch-all}
+  - {path: /robots.txt, status: 200, real: false, reason: spa-catch-all}
+found: []
+security_txt: null
+agent_card: null
+note: >-
+  Because no document was found, no `WellKnown`, `SecurityTxt` or `AgentCard`
+  pointer is wired into apis.yml. Recording an empty index as a discovery
+  surface would credit CloudSight with a posture it does not have.

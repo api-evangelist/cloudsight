@@ -1,0 +1,104 @@
+generated: '2026-08-09'
+method: searched
+source: https://cloudsight.docs.apiary.io/api-description-document
+description: >-
+  Request and response examples published by CloudSight in its own API
+  Blueprint, captured verbatim. These are the same payloads the Apiary mock
+  server replays (see sandbox/cloudsight-sandbox.yml).
+examples:
+- operationId: postImages
+  name: Submit a remote image URL
+  request:
+    method: POST
+    path: /images
+    headers:
+      Authorization: CloudSight [key]
+      Content-Type: application/json
+    body:
+      remote_image_url: https://example_images/logo.png
+  response:
+    status: 201
+    headers:
+      X-CloudSight-CreditBalance: 1
+      X-CloudSight-Overage: 0
+    body:
+      url: https://images.cloudsightapi.com/uploads/image_request/image/19/19404/19404152/Image.jpg
+      token: AJKAWHKGLjqMd9KDNIXQfg
+- operationId: postImages
+  name: Submit a multipart file upload
+  request:
+    method: POST
+    path: /images
+    headers:
+      Authorization: CloudSight [key]
+      Content-Type: multipart/form-data
+    form:
+      image: '@/path/to/image.jpg'
+  curl: |
+    curl -X POST \
+      https://api.cloudsight.ai/v1/images \
+      -H 'authorization: CloudSight [key]' \
+      -H 'cache-control: no-cache' \
+      -H 'content-type: multipart/form-data' \
+      -F image=@/path/to/image.jpg
+- operationId: postImages
+  name: Submit a base64 data URI
+  note: >-
+    CloudSight explicitly does not recommend this for anything other than very
+    small images.
+  request:
+    method: POST
+    path: /images
+    headers:
+      Authorization: CloudSight [key]
+      Content-Type: application/json
+    body:
+      image: data:image/png;base64,R0lG0dJDAhgbn...etc
+- operationId: postImages
+  name: Validation failure
+  response:
+    status: 422
+    body:
+      error:
+        image:
+        - can't be blank
+- operationId: getImage
+  name: Completed identification
+  request:
+    method: GET
+    path: /images/WySLTJWESPTtt6v0oBmzKf
+    headers:
+      Authorization: CloudSight [key]
+  response:
+    status: 200
+    body:
+      token: WySLTJWESPTtt6v0oBmzKf
+      url: http://.../your_headphones_image.jpg
+      ttl: 60
+      status: completed
+      name: red beats by dre headphones
+      flags:
+      - adult
+- operationId: getImage
+  name: Skipped image
+  response:
+    status: 200
+    body:
+      token: WWfqDSw6Ui1rtNDYlVvX2w
+      url: http://.../blurry_image.jpg
+      ttl: 60
+      status: skipped
+      reason: blurry
+- operationId: repostImage
+  name: Repost a timed-out request
+  request:
+    method: POST
+    path: /images/WySLTJWESPTtt6v0oBmzKf/repost
+    headers:
+      Authorization: CloudSight [key]
+  response:
+    status: 201
+    body:
+      status: not completed
+      url: http://.../your_headphones_image.jpg
+      token: WySLTJWESPTtt6v0oBmzKf

@@ -1,0 +1,245 @@
+FORMAT: 1A
+HOST: https://api.cloudsight.ai/v1
+
+# CloudSight API
+
+The CloudSight API is a simple REST API for understanding your images.
+Send us an image and we will return a description of its contents.
+
+## Authentication
+
+You can authenticate by one of two ways to the CloudSight API: OAuth1-Simple with key and secret, or simple key-based
+authentication.  Your API key is very important and identifies any request as yours, so be sure to keep it secret.  We
+recommend using HTTPS for communications with the API, otherwise your key will be sent in plain text over the internet,
+which is insecure.
+
+### Simple Key-Based
+
+On each request, include the following header, and replace `[key]` with the key provided for your account.
+
+```
+Authorization: CloudSight [key]
+```
+
+### OAuth1 Method
+
+In this method, the client calculates a signature from a key, secret, nonce, URL and parameters included in the request,
+and includes the resulting data in the `Authorization` HTTP header.  A full description of OAuth1 is outside the scope
+of this document.  Please visit http://tools.ietf.org/html/rfc5849 for more information.
+
+Use the authentication key and secret provided and make sure the `image` parameter is excluded from the
+signature calculation.  A detailed description of how to calculate the OAuth header is described in the following
+section.
+
+## SDKs
+
+CloudSight has a number of different SDKs to make using the API easy in your language of choice.
+
+**Ruby**: https://github.com/cloudsight/cloudsight-ruby
+
+**Objective C**: https://github.com/cloudsight/cloudsight-objc
+
+**Python**: https://github.com/cloudsight/cloudsight-python
+
+**Elixir**: https://github.com/cloudsight/cloudsight_elixir
+
+**Go**: https://github.com/cloudsight/cloudsight-go
+
+## Images Collection [/images]
+
+### Send an Image for Identification [POST]
+
+Send an image by using an HTTP POST request on the endpoint `/images` either as a multipart file upload, a base64 encoded image or a remote image url.
+These three cURL requests demonstrate the three possible ways of sending an image.
+
+1 - Multipart File
+
+```bash
+curl -X POST \
+  https://api.cloudsight.ai/v1/images \
+  -H 'authorization: CloudSight [key]' \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
+  -F image=@/path/to/image.jpg
+```
+
+2 - Base64 Encoded (we do not recommend this for anything other than very small images)
+
+```bash
+curl -X POST \
+  https://api.cloudsight.ai/v1/images \
+  -H 'authorization: CloudSight [key]' \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+  -d '{
+    "image": "data:image/png;base64,R0lG0dJDAhgbn...etc"
+}'
+```
+
+3 - Remote Image URL
+
+```bash
+curl -X POST \
+  https://api.cloudsight.ai/v1/images \
+  -H 'authorization: CloudSight [key]' \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+  -d '{
+    "remote_image_url": "http://englishbookgeorgia.com/blogebg/wp-content/uploads/2015/08/husky.jpg"
+}'
+```
+
+Any of these methods work, but only one can be used per request. Note that the first two have a parameter of `image` while the last has a parameter of `remote_image_url`.
+
+If a URL is sent, the URL must return a 200 response. Any non-200 response will result in an error, including redirect
+responses (e.g. 3xx status).
+
+The focus parameters accept the point, using North-West gravity (0,0 corresponds to the upper-left corner), for which to
+place a highlight of attention on the image. In the event there are many identifiable objects in the image, this
+attempts to place importance on the ones closest to the focal point. You may specify a focal point in terms of relative
+coordinates (0.0 through 1.0) or absolute coordinates (i.e. a 400x400 image would have 0 through 400 for each axis).
+
+Once the image request has been received, a response will be returned containing either a success or error message. If
+the request is successful, you will receive a `url` parameter containing a URL to the image as stored on our service, and
+a token for the image, which you can use to retrieve the resulting annotation data in the `/images/:token` endpoint.
+
+Note: We recommend an image resolution no higher than 1024x, and a JPEG compression level between 5-8. We resize images
+internally otherwise, and it could slow down the request process.
+
++ Request (application/json)
+
+  + Headers
+
+              Authorization: CloudSight [key]
+
+  + Attributes
+      + image (string) - Filepath - if you wish to upload a file the request must be multipart form encoded
+      + remote\_image\_url (string) - Url of image. If you are sending the URL the request can be JSON.
+      + locale: `en_US` (string) - The locale of the request
+      + language: `en_US` (string) - The language that the response should be returned in
+      + device\_id (string) - A unique ID generated for the device sending the request. We recommend generating a UUID.
+      + latitude (string) - Geolocation information for additional context
+      + longitude (string) - Geolocation information for additional context
+      + altitude (string) - Geolocation information for additional context
+      + ttl (number) - Deadline in seconds before expiration
+      + focus_x (number) - Focal point on image (x-coordinate) for specificity
+      + focus_y (number) - Focal point on image (y-coordinate) for specificity
+
+   + Body
+
+                {
+                    "remote_image_url": "https://example_images/logo.png"
+                }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            X-CloudSight-CreditBalance: 1
+            X-CloudSight-Overage: 0
+
+    + Body
+
+            {
+                "url": "https://images.cloudsightapi.com/uploads/image_request/image/19/19404/19404152/Image.jpg",
+                "token": "AJKAWHKGLjqMd9KDNIXQfg"
+            }
+
++ Response 422 (application/json)
+
+        {
+          "error" : {
+              "image" : ["can't be blank"]
+          }
+        }
+
+
+## Image [/images/{token}]
+
+### View an Image Response [GET]
+
+This endpoint retrieves the result of the image you identified. Supply the token received from the `/images` endpoint in
+the `/images/[token]` URL, replacing [token]. CloudSight will return one of several responses depending on the status of
+the identification.
+
+Identification of an image can take several seconds. We recommend your application "sleep" for 5 seconds before polling the
+API using the endpoint above for the response. If you receive a response with `"status": "not completed"`, we suggest polling
+the API every second until a "completed" response is received.
+
+#### Skip Reasons
+This endpoint can also return a result with a status of `skipped` and a `reason` the image was not processed. Reasons which
+an image may be `skipped` include:
+
+- `offensive` - The image was found to be offensive in nature.
+- `blurry` - The image was too blurry to be identified.
+- `dark` - The image was too dark to be identified.
+- `bright` - The image was too bright to be identified.
+- `unsure` - The image was unable to be identified for unknown reasons.
+- `close` -  The image was not properly processed.
+
+When a response is returned with a `skipped` reason of either `unsure` or `close`, it is a
+best practice to attempt a single [repost](http://docs.cloudsight.apiary.io/#reference/0/repost/repost-an-image)
+of the image token.
+
+#### Flags
+This endpoint can also return flags which can further indicate attributes of an image. A key of `flags` containing an array
+of values include:
+
+- `adult` - The image is considered "adult" in nature, usually non-pornographic nudity.
+
++ Parameters
+
+    + token: [token] (string) - Token returned by your POST to the images endpoint
+
++ Request
+
+  + Headers
+
+              Authorization: CloudSight [key]
+
+
++ Response 200 (application/json)
+
+        {
+          "token" : "WySLTJWESPTtt6v0oBmzKf",
+          "url" : "http://.../your_headphones_image.jpg",
+          "ttl" : 60,
+          "status" : "completed",
+          "name" : "red beats by dre headphones",
+          "flags" : ["adult"]
+        }
+
++ Response 200 (application/json)
+
+        {
+          "token" : "WWfqDSw6Ui1rtNDYlVvX2w",
+          "url" : "http://.../blurry_image.jpg",
+          "ttl" : 60,
+          "status" : "skipped",
+          "reason" : "blurry"
+        }
+
+## Repost [/images/{token}/repost]
+### Repost an Image [POST]
+
+If an image request has timed out; `{ "status" : "timeout" }`, you may re-post the request by indicating the original
+token and the /repost path. For example, if an image request was received successfully and a token `example\_token` was
+given, and had subsequently timed out, you can repost the image with this endpoint.
+
++ Parameters
+
+    + token (string) - Token returned by your POST to the images endpoint
+
++ Request
+
+  + Headers
+
+              Authorization: CloudSight [key]
+
++ Response 201 (application/json)
+
+        {
+          "status" : "not completed",
+          "url" : "http://.../your_headphones_image.jpg",
+          "token" : "WySLTJWESPTtt6v0oBmzKf"
+        }

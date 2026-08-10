@@ -1,0 +1,86 @@
+generated: '2026-08-09'
+method: derived
+source: >-
+  openapi/cloudsight-images-openapi.yml (derived from
+  https://cloudsight.docs.apiary.io/api-description-document)
+format: proprietary
+rfc9457: false
+description: >-
+  CloudSight does not use RFC 9457 problem+json. Failures arrive in two
+  distinct places: an HTTP 422 with a field-keyed validation envelope, and —
+  more commonly — inside an HTTP 200 poll response whose `status` is `skipped`
+  or `timeout`. Both are catalogued here, because an agent that branches only
+  on HTTP status will treat every skipped image as a success.
+envelope:
+  media_type: application/json
+  shape: '{"error": {"<field>": ["<message>", ...]}}'
+  example:
+    error:
+      image:
+      - can't be blank
+problems:
+- status: 422
+  title: Unprocessable entity
+  description: >-
+    The submitted image or its parameters failed validation — for example a
+    missing `image`, or a `remote_image_url` that did not return HTTP 200. Any
+    non-200 response from the remote URL, including a 3xx redirect, is an error.
+  media_type: application/json
+  schema: Error
+  source_operation: openapi/cloudsight-images-openapi.yml#postImages
+  remediation: >-
+    Send exactly one of `image` (multipart or base64) or `remote_image_url`,
+    and ensure a remote URL resolves with a direct 200.
+in_band_failures:
+  description: >-
+    Returned with HTTP 200 from GET /images/{token}. The `status` field carries
+    the outcome; `reason` explains a skip.
+  field: status
+  states:
+  - state: not completed
+    terminal: false
+    meaning: Recognition is still running.
+    remediation: Poll again in 1 second (after an initial 5-second sleep).
+  - state: completed
+    terminal: true
+    meaning: A caption is available in `name`.
+  - state: timeout
+    terminal: true
+    meaning: The request expired before recognition finished.
+    remediation: POST /images/{token}/repost to re-queue the original token.
+  - state: skipped
+    terminal: true
+    meaning: The image was received but not processed; see `reason`.
+skip_reasons:
+- code: offensive
+  meaning: The image was found to be offensive in nature.
+  retryable: false
+- code: blurry
+  meaning: The image was too blurry to be identified.
+  retryable: false
+  remediation: Resubmit a sharper capture.
+- code: dark
+  meaning: The image was too dark to be identified.
+  retryable: false
+  remediation: Resubmit with more exposure.
+- code: bright
+  meaning: The image was too bright to be identified.
+  retryable: false
+  remediation: Resubmit with less exposure.
+- code: unsure
+  meaning: The image was unable to be identified for unknown reasons.
+  retryable: true
+  remediation: Documented best practice is a SINGLE repost of the image token.
+- code: close
+  meaning: The image was not properly processed.
+  retryable: true
+  remediation: Documented best practice is a SINGLE repost of the image token.
+flags:
+- code: adult
+  meaning: The image is considered "adult" in nature, usually non-pornographic nudity.
+  note: Delivered as an array under `flags` alongside a normal completed response.
+gaps:
+- No 401/403 response is documented for a missing or invalid Authorization header.
+- No 429 or rate-limit error is documented.
+- No 5xx behaviour or retry guidance is documented.
+- Errors carry no stable machine-readable `type` URI or error code.

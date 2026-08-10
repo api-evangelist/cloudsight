@@ -1,0 +1,32 @@
+generated: '2026-08-09'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: cloudsight.ai
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 22 21:54:08 2026 GMT
+  hsts: false
+- host: cloudsight.docs.apiary.io
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct 18 23:59:59 2026 GMT
+  hsts: null
+- host: api.cloudsight.ai
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 18 17:27:40 2026 GMT
+  hsts: null
+domains:
+- domain: cloudsight.ai
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: none
+- domain: apiary.io
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: none

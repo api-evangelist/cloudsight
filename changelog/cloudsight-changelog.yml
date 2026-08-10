@@ -1,0 +1,60 @@
+generated: '2026-08-09'
+method: searched
+source: https://cloudsight.docs.apiary.io/feed
+docs: https://cloudsight.docs.apiary.io/feed
+description: >-
+  CloudSight publishes no hand-written changelog. What it does publish is an
+  Atom/RSS "API changes" feed emitted automatically by its Apiary
+  documentation project — every entry is a dated diff of the API description
+  document. That feed is the only dated record of contract change CloudSight
+  offers, so it is captured here verbatim. It has not moved since 2018.
+scheme: auto-generated document diffs (Apiary change feed)
+formats:
+  atom: https://cloudsight.docs.apiary.io/feed
+  rss: https://cloudsight.docs.apiary.io/feed/rss
+current_version: v1
+last_document_change: '2018-10-30T22:08:49Z'
+feed_updated: '2018-10-30T22:08:49Z'
+entries:
+- date: '2018-08-21T21:53:55Z'
+  title: CloudSight API changed
+  diff: https://app.apiary.io/cloudsight/diff/5b7c89f327834c2600bacec0
+- date: '2018-08-13T19:55:17Z'
+  title: CloudSight API changed
+  diff: https://app.apiary.io/cloudsight/diff/5b71e2254413f4260090b223
+- date: '2018-08-13T19:53:43Z'
+  title: CloudSight API changed
+  diff: https://app.apiary.io/cloudsight/diff/5b71e1c757f9652600a0d268
+- date: '2018-08-13T19:53:16Z'
+  title: CloudSight API changed
+  diff: https://app.apiary.io/cloudsight/diff/5b71e1ac57f9652600a0d260
+- date: '2018-08-13T19:52:38Z'
+  title: CloudSight API changed
+  diff: https://app.apiary.io/cloudsight/diff/5b71e1865b9e092600e9bc97
+- date: '2018-08-13T19:52:36Z'
+  title: CloudSight API changed
+  diff: https://app.apiary.io/cloudsight/diff/5b71e184250f6a2600211ecd
+- date: '2018-08-13T19:50:35Z'
+  title: CloudSight API changed
+  diff: https://app.apiary.io/cloudsight/diff/5b71e10b4413f4260090b21b
+- date: '2018-08-13T19:37:36Z'
+  title: CloudSight API changed
+  diff: https://app.apiary.io/cloudsight/diff/5b71de004413f4260090b211
+- date: '2018-08-13T19:36:49Z'
+  title: CloudSight API changed
+  diff: https://app.apiary.io/cloudsight/diff/5b71ddd157f9652600a0d23a
+notes:
+- >-
+  Entries carry no human-written summary — Apiary emits one "CloudSight API
+  changed" item per save, with a diff link that requires an Apiary session to
+  open. Nine entries exist; eight of them fall inside a single afternoon of
+  editing on 2018-08-13.
+- >-
+  The blueprint's own lastUpdated timestamp (2018-10-30T22:08:49.385Z) is later
+  than the newest feed entry, so at least one change was made after the feed's
+  last item.
+x-evidence:
+  fetched: '2026-08-09'
+  probes:
+  - {url: 'https://cloudsight.docs.apiary.io/feed', status: 200, content_type: application/atom+xml}
+  - {url: 'https://jsapi.apiary.io/apis/cloudsight/apiaryBlueprint.json', status: 200}

@@ -1,0 +1,65 @@
+generated: '2026-08-09'
+method: searched
+source: >-
+  https://jsapi.apiary.io/apis/cloudsight/apiaryBlueprint.json (mock/proxy URLs)
+  and https://cloudsight.ai/demo (the no-signup recognition demo)
+description: >-
+  CloudSight has no test-mode API keys, no test/live key prefixes and no
+  fixture tooling. What it does offer are two try-before-you-authenticate
+  surfaces: a public in-browser recognition demo on its own site, and the mock
+  server + interactive console that come with its Apiary documentation project.
+  Both are real and anonymously reachable; neither is a first-party sandbox
+  ENVIRONMENT, and no test credentials are published.
+modes:
+- name: production
+  base_url: https://api.cloudsight.ai/v1
+  note: >-
+    The only real mode. There is no test mode, no sandbox account, and no
+    key-prefix separation between test and live traffic — one account key
+    addresses production and consumes credits.
+consoles:
+- name: CloudSight live demo
+  url: https://cloudsight.ai/demo
+  auth_required: false
+  description: >-
+    An in-browser demo that uploads an image and returns the CloudSight caption
+    without an account. Backed by https://uploader.cloudsight.ai/upload (and
+    /upload/image64 for base64), which is a demo-only endpoint — it is NOT part
+    of the documented v1 API and is not in the OpenAPI.
+  captcha: reCAPTCHA
+- name: Apiary interactive console
+  url: https://cloudsight.docs.apiary.io
+  auth_required: false
+  description: >-
+    The documentation host ships Apiary's client-side console, so each
+    documented operation can be executed from the docs page.
+mock_server:
+  provider: Apiary
+  url_pattern: https://private-anon-<session>-cloudsight.apiary-mock.com/v1/
+  observed: https://private-anon-26aa6370fc-cloudsight.apiary-mock.com/v1/
+  note: >-
+    Apiary provisions a per-anonymous-session mock host, so the exact hostname
+    above is session-scoped and will differ per visitor. It replays the example
+    responses in the blueprint (the same examples captured in
+    examples/cloudsight-images-examples.yml).
+proxy_server:
+  provider: Apiary
+  url_pattern: https://private-anon-<session>-cloudsight.apiary-proxy.com/v1/
+  note: Records real traffic against production through the docs console.
+test_credentials: []
+test_data: []
+gaps:
+- No test API key, no test-mode key prefix, no sandbox account.
+- No published fixture images that deterministically produce a given caption or skip reason.
+- >-
+  No way to force a `timeout`, a `skipped` reason, or an `adult` flag in the
+  response for client testing.
+- >-
+  The mock server is provided by CloudSight's documentation vendor, not by
+  CloudSight, and disappears if the Apiary project does.
+x-evidence:
+  fetched: '2026-08-09'
+  probes:
+  - {url: 'https://jsapi.apiary.io/apis/cloudsight/apiaryBlueprint.json', status: 200}
+  - {url: 'https://uploader.cloudsight.ai/', status: 404, note: 'JSON 404 — host live'}
+  - {url: 'https://cloudsight.docs.apiary.io/', status: 200}
