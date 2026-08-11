@@ -37,25 +37,18 @@ tags:
 - Classification
 - Media
 apis:
-- name: CloudSight API
-  description: >-
-    A simple REST API for understanding images. Send an image and CloudSight
-    returns a natural-language description of its contents. Three operations —
-    submit an image, poll the resulting annotation by token, and repost a
-    request that timed out or was skipped as unsure/close.
+- aid: cloudsight:cloudsight-images-api
+  name: CloudSight Images API
+  description: Submit images for recognition and retrieve the resulting annotation.
   humanURL: https://cloudsight.docs.apiary.io
   baseURL: https://api.cloudsight.ai/v1
   tags:
-  - Image Recognition
-  - Computer Vision
-  - Captioning
+  - Images
   properties:
   - type: OpenAPI
-    url: openapi/cloudsight-images-openapi.yml
+    url: openapi/cloudsight-images-api-openapi.yml
   - type: APIBlueprint
     url: openapi/cloudsight-api-blueprint-original.apib
-  - type: Overlay
-    url: overlays/cloudsight-images-overlay.yaml
   - type: Documentation
     url: https://cloudsight.docs.apiary.io
 maintainers:
@@ -64,6 +57,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/cloudsight-images-overlay.yaml
 - type: DomainSecurity
   url: security/cloudsight-domain-security.yml
 - type: Website
