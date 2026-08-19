@@ -23,7 +23,7 @@ x-source: harvest:secondary-market
 x-source-url: https://forgeglobal.com/cloudsight_stock/
 x-tier: profiled
 x-tier-reason: enrichment
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 created: '2026-08-09'
 modified: '2026-08-09'
 image: https://cloudsight.ai/static/img/favicons/apple-touch-icon.png
