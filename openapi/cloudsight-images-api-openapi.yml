@@ -1,0 +1,292 @@
+openapi: 3.2.0
+info:
+  title: CloudSight Images API
+  version: v1
+  summary: Image recognition, captioning and classification as a simple REST API.
+  description: 'The CloudSight API is a simple REST API for understanding images. A client POSTs an image (multipart upload, base64 data URI, or a remote image URL) and receives a token; the client then polls `GET /images/{token}` until the recognition job reaches a terminal status and a natural-language `name` (caption) is returned.
+
+
+    PROVENANCE — this OpenAPI is a faithful mechanical conversion of the API Blueprint (FORMAT 1A) that CloudSight publishes at https://cloudsight.docs.apiary.io/api-description-document (saved verbatim alongside this file as `cloudsight-api-blueprint-original.apib`). Paths, methods, parameters, response codes, headers and example bodies are carried over unchanged from that document; nothing has been invented. CloudSight does not publish an OpenAPI of its own. The source blueprint was last updated by CloudSight on 2018-10-30.'
+  contact:
+    name: CloudSight
+    url: https://cloudsight.ai/contact
+  x-source-format: API Blueprint 1A
+  x-source-document: https://cloudsight.docs.apiary.io/api-description-document
+servers:
+- url: https://api.cloudsight.ai/v1
+  description: Production
+tags:
+- name: Images
+  description: Submit images for recognition and retrieve the resulting annotation.
+paths:
+  /images:
+    post:
+      tags:
+      - Images
+      operationId: postImages
+      summary: Send an image for identification
+      description: 'Send an image by using an HTTP POST request on the `/images` endpoint either as a multipart file upload, a base64 encoded image, or a remote image URL. Only one of these methods can be used per request: the first two use the `image` parameter, the last uses `remote_image_url`.
+
+
+        If a URL is sent, the URL must return a 200 response — any non-200 response (including a 3xx redirect) results in an error.
+
+
+        The focus parameters accept a point using North-West gravity ((0,0) is the upper-left corner) at which to place a highlight of attention on the image; coordinates may be relative (0.0 through 1.0) or absolute.
+
+
+        On success the response carries a `url` for the stored image and a `token` used to retrieve the annotation from `/images/{token}`.
+
+
+        CloudSight recommends an image resolution no higher than 1024px and a JPEG compression level between 5 and 8; larger images are resized internally, which slows the request.'
+      security:
+      - CloudSightKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageRequest'
+            examples:
+              remoteUrl:
+                summary: Remote image URL
+                value:
+                  remote_image_url: https://example_images/logo.png
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: Image file upload (multipart form encoded).
+                locale:
+                  type: string
+                language:
+                  type: string
+                device_id:
+                  type: string
+                latitude:
+                  type: string
+                longitude:
+                  type: string
+                altitude:
+                  type: string
+                ttl:
+                  type: number
+                focus_x:
+                  type: number
+                focus_y:
+                  type: number
+      responses:
+        '201':
+          description: Image accepted for identification.
+          headers:
+            X-CloudSight-CreditBalance:
+              description: Remaining credit balance on the account.
+              schema:
+                type: integer
+            X-CloudSight-Overage:
+              description: Credits consumed beyond the plan allowance.
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageAccepted'
+              examples:
+                accepted:
+                  value:
+                    url: https://images.cloudsightapi.com/uploads/image_request/image/19/19404/19404152/Image.jpg
+                    token: AJKAWHKGLjqMd9KDNIXQfg
+        '422':
+          description: Unprocessable entity — the submitted image or parameters failed validation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                blank:
+                  value:
+                    error:
+                      image:
+                      - can't be blank
+  /images/{token}:
+    get:
+      tags:
+      - Images
+      operationId: getImage
+      summary: View an image response
+      description: 'Retrieve the result of an image previously submitted to `/images`. Identification can take several seconds; CloudSight recommends sleeping 5 seconds before the first poll, then polling every second while the response carries `"status": "not completed"`.
+
+
+        A terminal response is `completed` (a `name` caption is present) or `skipped` (a `reason` explains why the image was not processed). Responses may also carry a `flags` array — currently `adult` for non-pornographic nudity.'
+      security:
+      - CloudSightKey: []
+      parameters:
+      - name: token
+        in: path
+        required: true
+        description: Token returned by the POST to the images endpoint.
+        schema:
+          type: string
+        example: WySLTJWESPTtt6v0oBmzKf
+      responses:
+        '200':
+          description: The current state of the image recognition job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageResponse'
+              examples:
+                completed:
+                  summary: Completed identification
+                  value:
+                    token: WySLTJWESPTtt6v0oBmzKf
+                    url: http://.../your_headphones_image.jpg
+                    ttl: 60
+                    status: completed
+                    name: red beats by dre headphones
+                    flags:
+                    - adult
+                skipped:
+                  summary: Skipped image
+                  value:
+                    token: WWfqDSw6Ui1rtNDYlVvX2w
+                    url: http://.../blurry_image.jpg
+                    ttl: 60
+                    status: skipped
+                    reason: blurry
+  /images/{token}/repost:
+    post:
+      tags:
+      - Images
+      operationId: repostImage
+      summary: Repost an image
+      description: 'If an image request has timed out (`{"status": "timeout"}`), the request may be re-posted by referencing the original token on the `/repost` path. Reposting is also the documented best practice when a response is returned with a `skipped` reason of `unsure` or `close`.'
+      security:
+      - CloudSightKey: []
+      parameters:
+      - name: token
+        in: path
+        required: true
+        description: Token returned by the POST to the images endpoint.
+        schema:
+          type: string
+      responses:
+        '201':
+          description: The image request was re-queued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageResponse'
+              examples:
+                reposted:
+                  value:
+                    status: not completed
+                    url: http://.../your_headphones_image.jpg
+                    token: WySLTJWESPTtt6v0oBmzKf
+components:
+  schemas:
+    ImageRequest:
+      type: object
+      description: Parameters accepted when submitting an image for identification.
+      properties:
+        image:
+          type: string
+          description: Filepath — if you wish to upload a file the request must be multipart form encoded. May also carry a base64 data URI (not recommended for anything other than very small images).
+        remote_image_url:
+          type: string
+          description: URL of the image. If you are sending the URL the request can be JSON. The URL must return a 200 response.
+        locale:
+          type: string
+          description: The locale of the request.
+          default: en_US
+        language:
+          type: string
+          description: The language that the response should be returned in.
+          default: en_US
+        device_id:
+          type: string
+          description: A unique ID generated for the device sending the request. CloudSight recommends generating a UUID.
+        latitude:
+          type: string
+          description: Geolocation information for additional context.
+        longitude:
+          type: string
+          description: Geolocation information for additional context.
+        altitude:
+          type: string
+          description: Geolocation information for additional context.
+        ttl:
+          type: number
+          description: Deadline in seconds before expiration.
+        focus_x:
+          type: number
+          description: Focal point on image (x-coordinate) for specificity.
+        focus_y:
+          type: number
+          description: Focal point on image (y-coordinate) for specificity.
+    Error:
+      type: object
+      description: CloudSight's validation error envelope — an `error` object whose keys are the offending field names and whose values are arrays of messages.
+      properties:
+        error:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    ImageResponse:
+      type: object
+      description: The state — and, when complete, the result — of a recognition job.
+      properties:
+        token:
+          type: string
+        url:
+          type: string
+        ttl:
+          type: number
+        status:
+          type: string
+          description: Recognition status. `not completed` while processing; `completed` when a caption is available; `skipped` when the image was not processed; `timeout` when the request expired.
+          enum:
+          - not completed
+          - completed
+          - skipped
+          - timeout
+        name:
+          type: string
+          description: The natural-language description of the image contents.
+        reason:
+          type: string
+          description: Why the image was skipped.
+          enum:
+          - offensive
+          - blurry
+          - dark
+          - bright
+          - unsure
+          - close
+        flags:
+          type: array
+          description: Attribute flags for the image.
+          items:
+            type: string
+            enum:
+            - adult
+    ImageAccepted:
+      type: object
+      description: Acknowledgement that an image was accepted for identification.
+      properties:
+        url:
+          type: string
+          description: URL of the image as stored on the CloudSight service.
+        token:
+          type: string
+          description: Token used to retrieve the resulting annotation data.
+  securitySchemes:
+    CloudSightKey:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Simple key-based authentication. Send `Authorization: CloudSight [key]` on every request, replacing `[key]` with the key issued for the account. CloudSight also supports OAuth 1.0a ("OAuth1-Simple", RFC 5849) with a key and secret, where the `image` parameter is excluded from the signature calculation; OpenAPI 3 has no native OAuth 1.0a security scheme, so that alternative is documented in `authentication/cloudsight-authentication.yml`.'

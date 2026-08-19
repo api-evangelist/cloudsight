@@ -1,0 +1,663 @@
+{
+  "item": [
+    {
+      "id": "1f5e7055-6802-4c07-b90f-ba26e642824a",
+      "name": "Images",
+      "description": {
+        "content": "Submit images for recognition and retrieve the resulting annotation.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f27f21d1-6cc1-4e45-b52b-549b54173186",
+          "name": "Send an image for identification",
+          "request": {
+            "name": "Send an image for identification",
+            "description": {
+              "content": "Send an image by using an HTTP POST request on the `/images` endpoint either as a multipart file upload, a base64 encoded image, or a remote image URL. Only one of these methods can be used per request: the first two use the `image` parameter, the last uses `remote_image_url`.\n\nIf a URL is sent, the URL must return a 200 response — any non-200 response (including a 3xx redirect) results in an error.\n\nThe focus parameters accept a point using North-West gravity ((0,0) is the upper-left corner) at which to place a highlight of attention on the image; coordinates may be relative (0.0 through 1.0) or absolute.\n\nOn success the response carries a `url` for the stored image and a `token` used to retrieve the annotation from `/images/{token}`.\n\nCloudSight recommends an image resolution no higher than 1024px and a JPEG compression level between 5 and 8; larger images are resized internally, which slows the request.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "images"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Authorization"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "description": "Image file upload (multipart form encoded)."
+                },
+                {
+                  "key": "locale",
+                  "value": "<string>",
+                  "type": "text",
+                  "description": ""
+                },
+                {
+                  "key": "language",
+                  "value": "<string>",
+                  "type": "text",
+                  "description": ""
+                },
+                {
+                  "key": "device_id",
+                  "value": "<string>",
+                  "type": "text",
+                  "description": ""
+                },
+                {
+                  "key": "latitude",
+                  "value": "<string>",
+                  "type": "text",
+                  "description": ""
+                },
+                {
+                  "key": "longitude",
+                  "value": "<string>",
+                  "type": "text",
+                  "description": ""
+                },
+                {
+                  "key": "altitude",
+                  "value": "<string>",
+                  "type": "text",
+                  "description": ""
+                },
+                {
+                  "key": "ttl",
+                  "value": "<number>",
+                  "type": "text",
+                  "description": ""
+                },
+                {
+                  "key": "focus_x",
+                  "value": "<number>",
+                  "type": "text",
+                  "description": ""
+                },
+                {
+                  "key": "focus_y",
+                  "value": "<number>",
+                  "type": "text",
+                  "description": ""
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e3fbe346-a995-430b-84a6-2289650dc235",
+              "name": "Image accepted for identification.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "images"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "description": {
+                        "content": "Image file upload (multipart form encoded).",
+                        "type": "text/plain"
+                      },
+                      "key": "image",
+                      "value": "<binary>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "locale",
+                      "value": "<string>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "language",
+                      "value": "<string>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "device_id",
+                      "value": "<string>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "latitude",
+                      "value": "<string>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "longitude",
+                      "value": "<string>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "altitude",
+                      "value": "<string>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "ttl",
+                      "value": "<number>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "focus_x",
+                      "value": "<number>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "focus_y",
+                      "value": "<number>",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Remaining credit balance on the account.",
+                  "key": "X-CloudSight-CreditBalance",
+                  "value": "4956"
+                },
+                {
+                  "disabled": false,
+                  "description": "Credits consumed beyond the plan allowance.",
+                  "key": "X-CloudSight-Overage",
+                  "value": "4956"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://images.cloudsightapi.com/uploads/image_request/image/19/19404/19404152/Image.jpg\",\n  \"token\": \"AJKAWHKGLjqMd9KDNIXQfg\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0d97ea1e-1e75-4803-b411-bdf88f71c822",
+              "name": "Unprocessable entity — the submitted image or parameters failed validation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "images"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "description": {
+                        "content": "Image file upload (multipart form encoded).",
+                        "type": "text/plain"
+                      },
+                      "key": "image",
+                      "value": "<binary>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "locale",
+                      "value": "<string>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "language",
+                      "value": "<string>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "device_id",
+                      "value": "<string>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "latitude",
+                      "value": "<string>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "longitude",
+                      "value": "<string>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "altitude",
+                      "value": "<string>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "ttl",
+                      "value": "<number>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "focus_x",
+                      "value": "<number>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "focus_y",
+                      "value": "<number>",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"image\": [\n      \"can't be blank\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "38aec1d7-5ed8-4c6d-94e6-23af8d96bb8f",
+          "name": "View an image response",
+          "request": {
+            "name": "View an image response",
+            "description": {
+              "content": "Retrieve the result of an image previously submitted to `/images`. Identification can take several seconds; CloudSight recommends sleeping 5 seconds before the first poll, then polling every second while the response carries `\"status\": \"not completed\"`.\n\nA terminal response is `completed` (a `name` caption is present) or `skipped` (a `reason` explains why the image was not processed). Responses may also carry a `flags` array — currently `adult` for non-pornographic nudity.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "images",
+                ":token"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "token",
+                  "description": "(Required) Token returned by the POST to the images endpoint."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Authorization"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "41b1bef4-117f-4ae0-bc2f-7cba06270232",
+              "name": "The current state of the image recognition job.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "images",
+                    ":token"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) Token returned by the POST to the images endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"token\": \"WySLTJWESPTtt6v0oBmzKf\",\n  \"url\": \"http://.../your_headphones_image.jpg\",\n  \"ttl\": 60,\n  \"status\": \"completed\",\n  \"name\": \"red beats by dre headphones\",\n  \"flags\": [\n    \"adult\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "804e6400-4b6c-4440-83ba-1ee2cb609591",
+          "name": "Repost an image",
+          "request": {
+            "name": "Repost an image",
+            "description": {
+              "content": "If an image request has timed out (`{\"status\": \"timeout\"}`), the request may be re-posted by referencing the original token on the `/repost` path. Reposting is also the documented best practice when a response is returned with a `skipped` reason of `unsure` or `close`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "images",
+                ":token",
+                "repost"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "token",
+                  "description": "(Required) Token returned by the POST to the images endpoint."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Authorization"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "44d8d929-951a-4df9-a00e-150ee254f68d",
+              "name": "The image request was re-queued.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "images",
+                    ":token",
+                    "repost"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) Token returned by the POST to the images endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"not completed\",\n  \"url\": \"http://.../your_headphones_image.jpg\",\n  \"token\": \"WySLTJWESPTtt6v0oBmzKf\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cloudsight.ai/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "e189f4c7-4cf9-4fa0-9306-010c4a54b94d",
+    "name": "CloudSight Images API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The CloudSight API is a simple REST API for understanding images. A client POSTs an image (multipart upload, base64 data URI, or a remote image URL) and receives a token; the client then polls `GET /images/{token}` until the recognition job reaches a terminal status and a natural-language `name` (caption) is returned.\n\nPROVENANCE — this OpenAPI is a faithful mechanical conversion of the API Blueprint (FORMAT 1A) that CloudSight publishes at https://cloudsight.docs.apiary.io/api-description-document (saved verbatim alongside this file as `cloudsight-api-blueprint-original.apib`). Paths, methods, parameters, response codes, headers and example bodies are carried over unchanged from that document; nothing has been invented. CloudSight does not publish an OpenAPI of its own. The source blueprint was last updated by CloudSight on 2018-10-30.\n\nContact Support:\n Name: CloudSight",
+      "type": "text/plain"
+    }
+  }
+}

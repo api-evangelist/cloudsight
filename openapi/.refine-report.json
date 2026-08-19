@@ -1,0 +1,17 @@
+{
+  "provider": "cloudsight",
+  "sources": [
+    "cloudsight-images-api-openapi.yml"
+  ],
+  "outputs": [
+    "cloudsight-images-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "cloudsight-images-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": []
+}

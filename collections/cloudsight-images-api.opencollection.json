@@ -1,0 +1,89 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "CloudSight Images API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Images",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Send an image for identification",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cloudsight.ai/v1/images",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Send an image by using an HTTP POST request on the `/images` endpoint either as a multipart file upload, a base64 encoded image, or a remote image URL. Only one of these methods can be used per request: the first two use the `image` parameter, the last uses `remote_image_url`.\n\nIf a URL is sent, the URL must return a 200 response — any non-200 response (including a 3xx redirect) results in an error.\n\nThe focus parameters accept a point using North-West gravity ((0,0) is the upper-left corner) at"
+        },
+        {
+          "info": {
+            "name": "View an image response",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudsight.ai/v1/images/:token",
+            "params": [
+              {
+                "name": "token",
+                "value": "WySLTJWESPTtt6v0oBmzKf",
+                "type": "path",
+                "description": "Token returned by the POST to the images endpoint."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Retrieve the result of an image previously submitted to `/images`. Identification can take several seconds; CloudSight recommends sleeping 5 seconds before the first poll, then polling every second while the response carries `\"status\": \"not completed\"`.\n\nA terminal response is `completed` (a `name` caption is present) or `skipped` (a `reason` explains why the image was not processed). Responses may also carry a `flags` array — currently `adult` for non-pornographic nudity."
+        },
+        {
+          "info": {
+            "name": "Repost an image",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cloudsight.ai/v1/images/:token/repost",
+            "params": [
+              {
+                "name": "token",
+                "value": "",
+                "type": "path",
+                "description": "Token returned by the POST to the images endpoint."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "If an image request has timed out (`{\"status\": \"timeout\"}`), the request may be re-posted by referencing the original token on the `/repost` path. Reposting is also the documented best practice when a response is returned with a `skipped` reason of `unsure` or `close`."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
