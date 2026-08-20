@@ -30,6 +30,15 @@ image: https://cloudsight.ai/static/img/favicons/apple-touch-icon.png
 tags:
 - Company
 - Artificial Intelligence
+- Machine-Learning
+- Computer-Vision
+- Image Recognition
+- Image Captioning
+- Classification
+- Media
+tags_raw:
+- Company
+- Artificial Intelligence
 - Machine Learning
 - Computer Vision
 - Image Recognition
@@ -43,6 +52,8 @@ apis:
   humanURL: https://cloudsight.docs.apiary.io
   baseURL: https://api.cloudsight.ai/v1
   tags:
+  - Image
+  tags_raw:
   - Images
   properties:
   - type: OpenAPI
