@@ -3,10 +3,7 @@ info:
   title: CloudSight Images API
   version: v1
   summary: Image recognition, captioning and classification as a simple REST API.
-  description: 'The CloudSight API is a simple REST API for understanding images. A client POSTs an image (multipart upload, base64 data URI, or a remote image URL) and receives a token; the client then polls `GET /images/{token}` until the recognition job reaches a terminal status and a natural-language `name` (caption) is returned.
-
-
-    PROVENANCE — this OpenAPI is a faithful mechanical conversion of the API Blueprint (FORMAT 1A) that CloudSight publishes at https://cloudsight.docs.apiary.io/api-description-document (saved verbatim alongside this file as `cloudsight-api-blueprint-original.apib`). Paths, methods, parameters, response codes, headers and example bodies are carried over unchanged from that document; nothing has been invented. CloudSight does not publish an OpenAPI of its own. The source blueprint was last updated by CloudSight on 2018-10-30.'
+  description: The CloudSight API is a simple REST API for understanding images.
   contact:
     name: CloudSight
     url: https://cloudsight.ai/contact
@@ -187,55 +184,6 @@ paths:
                     token: WySLTJWESPTtt6v0oBmzKf
 components:
   schemas:
-    ImageRequest:
-      type: object
-      description: Parameters accepted when submitting an image for identification.
-      properties:
-        image:
-          type: string
-          description: Filepath — if you wish to upload a file the request must be multipart form encoded. May also carry a base64 data URI (not recommended for anything other than very small images).
-        remote_image_url:
-          type: string
-          description: URL of the image. If you are sending the URL the request can be JSON. The URL must return a 200 response.
-        locale:
-          type: string
-          description: The locale of the request.
-          default: en_US
-        language:
-          type: string
-          description: The language that the response should be returned in.
-          default: en_US
-        device_id:
-          type: string
-          description: A unique ID generated for the device sending the request. CloudSight recommends generating a UUID.
-        latitude:
-          type: string
-          description: Geolocation information for additional context.
-        longitude:
-          type: string
-          description: Geolocation information for additional context.
-        altitude:
-          type: string
-          description: Geolocation information for additional context.
-        ttl:
-          type: number
-          description: Deadline in seconds before expiration.
-        focus_x:
-          type: number
-          description: Focal point on image (x-coordinate) for specificity.
-        focus_y:
-          type: number
-          description: Focal point on image (y-coordinate) for specificity.
-    Error:
-      type: object
-      description: CloudSight's validation error envelope — an `error` object whose keys are the offending field names and whose values are arrays of messages.
-      properties:
-        error:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
     ImageResponse:
       type: object
       description: The state — and, when complete, the result — of a recognition job.
@@ -284,6 +232,55 @@ components:
         token:
           type: string
           description: Token used to retrieve the resulting annotation data.
+    Error:
+      type: object
+      description: CloudSight's validation error envelope — an `error` object whose keys are the offending field names and whose values are arrays of messages.
+      properties:
+        error:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    ImageRequest:
+      type: object
+      description: Parameters accepted when submitting an image for identification.
+      properties:
+        image:
+          type: string
+          description: Filepath — if you wish to upload a file the request must be multipart form encoded. May also carry a base64 data URI (not recommended for anything other than very small images).
+        remote_image_url:
+          type: string
+          description: URL of the image. If you are sending the URL the request can be JSON. The URL must return a 200 response.
+        locale:
+          type: string
+          description: The locale of the request.
+          default: en_US
+        language:
+          type: string
+          description: The language that the response should be returned in.
+          default: en_US
+        device_id:
+          type: string
+          description: A unique ID generated for the device sending the request. CloudSight recommends generating a UUID.
+        latitude:
+          type: string
+          description: Geolocation information for additional context.
+        longitude:
+          type: string
+          description: Geolocation information for additional context.
+        altitude:
+          type: string
+          description: Geolocation information for additional context.
+        ttl:
+          type: number
+          description: Deadline in seconds before expiration.
+        focus_x:
+          type: number
+          description: Focal point on image (x-coordinate) for specificity.
+        focus_y:
+          type: number
+          description: Focal point on image (y-coordinate) for specificity.
   securitySchemes:
     CloudSightKey:
       type: apiKey
