@@ -1,5 +1,8 @@
 aid: cloudsight
 name: CloudSight
+x-docs-platform: apiary
+x-docs-platform-confidence: high
+x-docs-platform-checked: 2026-09-24
 x-enrichment:
   date: '2026-08-09'
   status: enriched
@@ -56,8 +59,8 @@ image: https://cloudsight.ai/static/img/favicons/apple-touch-icon.png
 tags:
 - Company
 - Artificial Intelligence
-- Machine-Learning
-- Computer-Vision
+- Machine Learning
+- Computer Vision
 - Image Recognition
 - Image Captioning
 - Classification
@@ -71,6 +74,8 @@ tags_raw:
 - Image Captioning
 - Classification
 - Media
+- Machine-Learning
+- Computer-Vision
 apis:
 - aid: cloudsight:cloudsight-images-api
   name: CloudSight Images API

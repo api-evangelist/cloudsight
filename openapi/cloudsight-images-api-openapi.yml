@@ -184,6 +184,16 @@ paths:
                     token: WySLTJWESPTtt6v0oBmzKf
 components:
   schemas:
+    Error:
+      type: object
+      description: CloudSight's validation error envelope — an `error` object whose keys are the offending field names and whose values are arrays of messages.
+      properties:
+        error:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
     ImageResponse:
       type: object
       description: The state — and, when complete, the result — of a recognition job.
@@ -222,26 +232,6 @@ components:
             type: string
             enum:
             - adult
-    ImageAccepted:
-      type: object
-      description: Acknowledgement that an image was accepted for identification.
-      properties:
-        url:
-          type: string
-          description: URL of the image as stored on the CloudSight service.
-        token:
-          type: string
-          description: Token used to retrieve the resulting annotation data.
-    Error:
-      type: object
-      description: CloudSight's validation error envelope — an `error` object whose keys are the offending field names and whose values are arrays of messages.
-      properties:
-        error:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
     ImageRequest:
       type: object
       description: Parameters accepted when submitting an image for identification.
@@ -281,6 +271,16 @@ components:
         focus_y:
           type: number
           description: Focal point on image (y-coordinate) for specificity.
+    ImageAccepted:
+      type: object
+      description: Acknowledgement that an image was accepted for identification.
+      properties:
+        url:
+          type: string
+          description: URL of the image as stored on the CloudSight service.
+        token:
+          type: string
+          description: Token used to retrieve the resulting annotation data.
   securitySchemes:
     CloudSightKey:
       type: apiKey
