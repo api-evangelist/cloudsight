@@ -184,6 +184,45 @@ paths:
                     token: WySLTJWESPTtt6v0oBmzKf
 components:
   schemas:
+    ImageRequest:
+      type: object
+      description: Parameters accepted when submitting an image for identification.
+      properties:
+        image:
+          type: string
+          description: Filepath — if you wish to upload a file the request must be multipart form encoded. May also carry a base64 data URI (not recommended for anything other than very small images).
+        remote_image_url:
+          type: string
+          description: URL of the image. If you are sending the URL the request can be JSON. The URL must return a 200 response.
+        locale:
+          type: string
+          description: The locale of the request.
+          default: en_US
+        language:
+          type: string
+          description: The language that the response should be returned in.
+          default: en_US
+        device_id:
+          type: string
+          description: A unique ID generated for the device sending the request. CloudSight recommends generating a UUID.
+        latitude:
+          type: string
+          description: Geolocation information for additional context.
+        longitude:
+          type: string
+          description: Geolocation information for additional context.
+        altitude:
+          type: string
+          description: Geolocation information for additional context.
+        ttl:
+          type: number
+          description: Deadline in seconds before expiration.
+        focus_x:
+          type: number
+          description: Focal point on image (x-coordinate) for specificity.
+        focus_y:
+          type: number
+          description: Focal point on image (y-coordinate) for specificity.
     ImageResponse:
       type: object
       description: The state — and, when complete, the result — of a recognition job.
@@ -232,45 +271,6 @@ components:
         token:
           type: string
           description: Token used to retrieve the resulting annotation data.
-    ImageRequest:
-      type: object
-      description: Parameters accepted when submitting an image for identification.
-      properties:
-        image:
-          type: string
-          description: Filepath — if you wish to upload a file the request must be multipart form encoded. May also carry a base64 data URI (not recommended for anything other than very small images).
-        remote_image_url:
-          type: string
-          description: URL of the image. If you are sending the URL the request can be JSON. The URL must return a 200 response.
-        locale:
-          type: string
-          description: The locale of the request.
-          default: en_US
-        language:
-          type: string
-          description: The language that the response should be returned in.
-          default: en_US
-        device_id:
-          type: string
-          description: A unique ID generated for the device sending the request. CloudSight recommends generating a UUID.
-        latitude:
-          type: string
-          description: Geolocation information for additional context.
-        longitude:
-          type: string
-          description: Geolocation information for additional context.
-        altitude:
-          type: string
-          description: Geolocation information for additional context.
-        ttl:
-          type: number
-          description: Deadline in seconds before expiration.
-        focus_x:
-          type: number
-          description: Focal point on image (x-coordinate) for specificity.
-        focus_y:
-          type: number
-          description: Focal point on image (y-coordinate) for specificity.
     Error:
       type: object
       description: CloudSight's validation error envelope — an `error` object whose keys are the offending field names and whose values are arrays of messages.
