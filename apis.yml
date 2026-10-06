@@ -54,7 +54,7 @@ accessModel:
   method: derived
 specificationVersion: '0.23'
 created: '2026-08-09'
-modified: '2026-08-09'
+modified: '2026-10-06'
 image: https://cloudsight.ai/static/img/favicons/apple-touch-icon.png
 tags:
 - Company
@@ -99,6 +99,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- url: https://cloudsight.ai/blog/
+  type: Blog
 - type: Overlay
   url: overlays/cloudsight-images-overlay.yaml
 - type: DomainSecurity
